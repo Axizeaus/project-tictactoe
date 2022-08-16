@@ -15,6 +15,22 @@ const Player = () => {
   }
 };
 
+const Bot = () => {
+  let handle = 'o';
+
+  const setHandle = (val) => {
+    handle = val
+  }
+
+  const getHandle = () =>{
+    return handle
+  }
+
+  return {
+    setHandle, getHandle
+  }
+}
+
 // making gameboard
 
 const gameBoard = (() => {
@@ -27,9 +43,10 @@ const gameBoard = (() => {
   // console.log(xbtn, obtn);
 
   const player = Player();
+  const bot = Bot();
 
-  xbtn.onclick = () => player.setHandle('x');
-  obtn.onclick = () => player.setHandle('o');
+  xbtn.onclick = () => {player.setHandle('x'), bot.setHandle('o')};
+  obtn.onclick = () => {player.setHandle('o'), bot.setHandle('x')};
   
   function setUpBoard() {
     container.setAttribute(
@@ -51,20 +68,45 @@ const gameBoard = (() => {
     }
   }
 
+  function botChoose(){
+    const avil = new Array;
+    for (let i of container.childNodes){
+      if (i.dataset.available === 'inactive'){
+        avil.push(i.dataset.id);
+      }
+    }
+    botClick(avil);
+  }
+
+  function botClick(avil){
+    const limit = avil.length;
+    const randomNumber = Math.floor(Math.random() * limit);
+    const id = avil[randomNumber];
+    for (let i of container.childNodes){
+      if(i.dataset.id === id){
+        i.setAttribute('data-available', 'active');
+        const handle = bot.getHandle();
+        console.log(handle);
+        i.innerHTML = handle;
+      }
+    }
+  }
+
   function click(e){
     let check = e.target.getAttribute('data-available');
     if (check === 'inactive'){
       e.target.setAttribute('data-available', 'active')
-      let handle = player.getHandle();
+      const handle = player.getHandle();
       e.target.innerHTML = handle;
-      winCheck(e);
+      botChoose(e);
+      winCheck();
     } else {
       return;
     }
   }
 
-  function winPattern(arr){
-    pattern = [
+  function winPattern(arr, handle){
+    const pattern = [
       ["0 0", "0 1", "0 2"],
       ["1 0", "1 1", "1 2"],
       ["2 0", "2 1", "2 2"],
@@ -74,9 +116,16 @@ const gameBoard = (() => {
       ["0 0", "1 1", "2 2"],
       ["0 2", "1 1", "2 0"]
     ]
+    for (let i=0; i < pattern.length; i++){
+      if(arr.includes(pattern[i][0]) && arr.includes(pattern[i][1]) && arr.includes(pattern[i][2])){
+        console.log(arr);
+        alert(`${handle} is the winner`);
+        console.log(window);
+      }
+    }
   }
 
-  function winCheck(e){
+  function winCheck(){
     const xArr = [];
     const oArr = [];
     for (let i = 0; i < container.childNodes.length; i++){
@@ -89,9 +138,13 @@ const gameBoard = (() => {
        }
       }
     }
+    winPattern(xArr, 'x');
+    winPattern(oArr, 'o');
+  }
 
-    console.log('xArr:', xArr);
-    console.log('oArr:', oArr);
+  function cleanBoard(){
+    container.innerHTML = '';
+    setUpBoard();
   }
 
   return {
