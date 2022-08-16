@@ -39,6 +39,7 @@ const gameBoard = (() => {
   // x and o buttons
   const xbtn = document.getElementById('x');
   const obtn = document.getElementById('o');
+  const reset = document.getElementById('reset');
 
   // console.log(xbtn, obtn);
 
@@ -47,6 +48,7 @@ const gameBoard = (() => {
 
   xbtn.onclick = () => {player.setHandle('x'), bot.setHandle('o')};
   obtn.onclick = () => {player.setHandle('o'), bot.setHandle('x')};
+  reset.onclick = () => {cleanBoard()}
   
   function setUpBoard() {
     container.setAttribute(
@@ -118,9 +120,8 @@ const gameBoard = (() => {
     ]
     for (let i=0; i < pattern.length; i++){
       if(arr.includes(pattern[i][0]) && arr.includes(pattern[i][1]) && arr.includes(pattern[i][2])){
-        console.log(arr);
         alert(`${handle} is the winner`);
-        console.log(window);
+        cleanBoard();
       }
     }
   }
