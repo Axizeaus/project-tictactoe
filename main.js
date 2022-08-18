@@ -46,8 +46,8 @@ const gameBoard = (() => {
   const player = Player();
   const bot = Bot();
 
-  xbtn.onclick = () => {player.setHandle('x'), bot.setHandle('o')};
-  obtn.onclick = () => {player.setHandle('o'), bot.setHandle('x')};
+  xbtn.onclick = () => {cleanBoard(),player.setHandle('x'), bot.setHandle('o')};
+  obtn.onclick = () => {cleanBoard(),player.setHandle('o'), bot.setHandle('x')};
   reset.onclick = () => {cleanBoard()}
   
   function setUpBoard() {
@@ -100,7 +100,10 @@ const gameBoard = (() => {
       e.target.setAttribute('data-available', 'active')
       const handle = player.getHandle();
       e.target.innerHTML = handle;
-      botChoose(e);
+      setTimeout(() => {
+        botChoose(e);
+      }, 500);
+      
       winCheck();
     } else {
       return;
